@@ -1,7 +1,7 @@
 import logging
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(encoding='utf-8', level=logging.DEBUG, format="")
+logging.basicConfig(encoding='utf-8', level=logging.INFO, format="")
 
 INFO_RUN_STRATEGY = "INFO_0001"
 INFO_LOADING_DATA = "INFO_0002"
