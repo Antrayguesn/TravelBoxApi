@@ -7,3 +7,5 @@ dist
 __pycache__
 *.egg-info
 build
+__pycache__
+

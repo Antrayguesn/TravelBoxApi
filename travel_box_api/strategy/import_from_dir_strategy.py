@@ -14,6 +14,7 @@ DEFAULT_IMPORT_DIR_PATH = "sorted/"
 IMPORTED_DIR_PATH_VAR = "TB_IMPORTED_DIR_PATH"
 
 
+# Create photo cluster by existing structured dirs
 class ImportFromDirStrategy(Strategy):
     def __init__(self):
         super().__init__()
@@ -25,7 +26,7 @@ class ImportFromDirStrategy(Strategy):
         imported_dir_path = os.environ.get(IMPORTED_DIR_PATH_VAR, DEFAULT_IMPORT_DIR_PATH)
         self.log(DEBUG_PARSING_DIR, f"Imported dir path : {imported_dir_path}", path=imported_dir_path)
 
-        for root, dirs, files in os.walk(imported_dir_path, followlinks=True):
+        for root, _, files in os.walk(imported_dir_path, followlinks=True):
             if files:
                 location = root[len(IMPORT_DIR_PATH):]
                 if location not in all_location:
@@ -47,7 +48,7 @@ class ImportFromDirStrategy(Strategy):
                     self.clusters[cluster_id]["photos"] = {}
                     self.clusters[cluster_id]["imported"] = True
                     for _, photo in photos.items():
-                        self.clusters[cluster_id]["photos"][photo.sha256] = photo.toJSON()
+                        self.clusters[cluster_id]["photos"][photo.sha256] = photo.to_json()
 
     def process(self):
         self._import_from_dir()

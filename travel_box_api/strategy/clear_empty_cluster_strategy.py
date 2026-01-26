@@ -1,7 +1,7 @@
 #!/bin/python3
 
 """
-Split big photo cluster
+Parse all clusters and remove the empty one
 """
 
 import copy
@@ -15,9 +15,9 @@ class ClearEmptyClusterStrategy(Strategy):
         self.STRATEGY_CODE = "001"
 
     def __clear_empty_cluster(self):
-        for id, cluster in copy.deepcopy(self.clusters).items():
+        for cluster_id, cluster in copy.deepcopy(self.clusters).items():
             if "photos" not in cluster or not cluster["photos"]:
-                del self.cluster[id]
+                del self.clusters[cluster_id]
 
     def process(self):
         self.__clear_empty_cluster()

@@ -4,10 +4,11 @@ from travel_box_api.strategy.strategy import Strategy
 from travel_box_api.utils.get_map_service import get_map
 
 
+# Get a parsable way to print clusters
 class GetClusterMapStrategy(Strategy):
     def __init__(self):
         super().__init__()
-        self.STRATEGY_CODE = "012"
+        self.STRATEGY_CODE = "021"
 
     def process(self):
         return get_map()

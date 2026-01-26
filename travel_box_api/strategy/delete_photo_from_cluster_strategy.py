@@ -2,6 +2,7 @@
 from travel_box_api.strategy.strategy import Strategy
 
 
+# Delete the cluster ID to the database
 class DeletePhotoFromClusterStrategy(Strategy):
     def __init__(self):
         super().__init__()
@@ -14,5 +15,3 @@ class DeletePhotoFromClusterStrategy(Strategy):
         except KeyError:
             self.clusters["BIN"] = {"place": "bin", "photos": {photo_id: photo_to_del}}
         del self.clusters[cluster_id]["photos"][photo_id]
-
-

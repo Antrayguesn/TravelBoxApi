@@ -8,6 +8,7 @@ from travel_box_api.strategy.strategy import Strategy
 from travel_box_api.data.log import DEBUG_NO_KEY_COORD
 
 
+# Get GPX file with geo informations of photos
 class ExportPhotosGPXStrategy(Strategy):
     def __init__(self):
         super().__init__()
@@ -22,15 +23,15 @@ class ExportPhotosGPXStrategy(Strategy):
         gpx.set("xmlns", "http://www.topografix.com/GPX/1/1")
         gpx.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
         trk = ET.SubElement(gpx, "trk")
-        trkName = ET.SubElement(trk, "name")
-        trkName.text = "LazyGrouping"
+        trk_name = ET.SubElement(trk, "name")
+        trk_name.text = "LazyGrouping"
 
         for cluster_id, cluster in self.clusters.items():
             trk_cluster = None
             try:
                 trk_cluster = ET.SubElement(trk, "wpt")
-                trk_cluster.set('lon', "{}".format(cluster["centroid"][1]))
-                trk_cluster.set('lat', "{}".format(cluster["centroid"][0]))
+                trk_cluster.set("lon", str(cluster["centroid"][1]))
+                trk_cluster.set('lat', str(cluster["centroid"][0]))
             except KeyError as e:
                 self.log(DEBUG_NO_KEY_COORD, f"Can't find key {e} for cluster {cluster_id}", cluster_id=cluster_id)
                 continue
@@ -41,7 +42,6 @@ class ExportPhotosGPXStrategy(Strategy):
                 trk_time.text = str(t)
             except KeyError as e:
                 self.log(DEBUG_NO_KEY_COORD, f"Can't find key {e}", cluster_id=cluster_id)
-                pass
 
             trk_name = ET.SubElement(trk_cluster, "name")
             try:
@@ -54,7 +54,7 @@ class ExportPhotosGPXStrategy(Strategy):
 
         return ET.tostring(gpx)
 
-    def process(self, **kwargs):
+    def process(self):
         gpx = self.__export_as_points()
         gpx_b64 = base64.b64encode(gpx).decode()
         return {"file": gpx_b64}

@@ -1,12 +1,10 @@
 #!/bin/python3
 
-"""
-Find name places from coord
-"""
-import requests
 import time
 import copy
 import re
+
+import requests
 
 from travel_box_api.utils.country_code import COUNTRY_CODE
 from travel_box_api.strategy.strategy import Strategy
@@ -18,6 +16,7 @@ DUCKDUCK_URL = "https://duckduckgo.com/?q={search}&format=json"
 NOMINATIM_API = "https://nominatim.openstreetmap.org/reverse?lat={lat}&lon={lon}&format=json"
 
 
+# Looking on Internet to find the name of the place where were taken the photos
 class FindPlaceNameStrategy(Strategy):
     def __init__(self):
         super().__init__()
@@ -36,13 +35,13 @@ class FindPlaceNameStrategy(Strategy):
                or "country" in metadata \
                or "place" in metadata:
                 continue
-            
+
             self.log(DEBUG_FIND_CLUSTER_PLACE, f"Finding the place for the cluster {cluster}", cluster_id=cluster)
 
             try:
-                ret = requests.get(NOMINATIM_API.format(lat=coord[0], lon=coord[1]), headers={"User-agent": "classify - v0.1", "Accept-Language": "fr-FR, en;q=0.8"})
-            except KeyboardInterrupt:
-                exit()
+                ret = requests.get(NOMINATIM_API.format(lat=coord[0], lon=coord[1]),
+                                   headers={"User-agent": "classify - v0.1", "Accept-Language": "fr-FR, en;q=0.8"},
+                                   timeout=60)
             # I have realy bad connection ... If the request timeout, we play again the scrpit again
             except Exception:
                 continue

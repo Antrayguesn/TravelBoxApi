@@ -1,7 +1,7 @@
 from math import cos, asin, sqrt, pi
 
 
-def DMStoDD(degrees, minutes, seconds, hemisphere):
+def dms_to_dd(degrees, minutes, seconds, hemisphere):
     """ Convert DMS (Degrees, Minutes, Seconds) to DD (Decimal Degrees)."""
     dd = degrees + (minutes / 60) + (seconds / 3600)
     return -dd if hemisphere in ['S', 'W'] else dd

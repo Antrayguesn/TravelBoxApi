@@ -11,6 +11,7 @@ class Strategy():
         Initialise un objet Stragegy avec les répertoires d'entrée et de sortie.
         """
         self.STRATEGY_CODE = "00"
+        self.clusters = None
 
     def log(self, code, msg, **kwargs):
         log(code=code, msg=msg, service_code=self.STRATEGY_CODE, **kwargs)

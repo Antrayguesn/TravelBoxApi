@@ -2,6 +2,7 @@
 from travel_box_api.strategy.strategy import Strategy
 
 
+# Get all clusters
 class GetClustersStrategy(Strategy):
     def __init__(self):
         super().__init__()

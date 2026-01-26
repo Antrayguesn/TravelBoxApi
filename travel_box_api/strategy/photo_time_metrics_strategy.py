@@ -11,6 +11,7 @@ from travel_box_api.strategy.strategy import Strategy
 from travel_box_api.data.log import ERROR_ATTRIBUTE_ERROR
 
 
+# Write the period time where been taken photos in clusters
 class PhotoTimeMetricsStrategy(Strategy):
     def __init__(self):
         super().__init__()
@@ -25,12 +26,11 @@ class PhotoTimeMetricsStrategy(Strategy):
                 continue
             except AttributeError as e:
                 self.log(ERROR_ATTRIBUTE_ERROR, f"Attribute error {e} for cluster {cluster_id}", cluster_id=cluster_id)
-                print(cluster["photos"])
             last_image_datetime = None
             end_time_of_period = None
             first_time_of_period = None
             self.clusters[cluster_id]["periode"] = []
-            for sha, image in sorted_date_image:
+            for _, image in sorted_date_image:
                 image_time = image["datetime"]
                 if last_image_datetime is None:
                     last_image_datetime = image_time

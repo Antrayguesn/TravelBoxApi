@@ -5,7 +5,7 @@ def get_map():
     clusters = read_json_file()
     path_map = {}
 
-    for cluster_id, cluster in clusters.items():
+    for _, cluster in clusters.items():
         if "location" in cluster:
             levels = cluster["location"].split("/")
             current_level = path_map

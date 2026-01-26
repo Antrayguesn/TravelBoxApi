@@ -1,8 +1,9 @@
-from exif import Image
 import datetime
 import hashlib
 
-from travel_box_api.utils.geo_function import DMStoDD
+from exif import Image
+
+from travel_box_api.utils.geo_function import dms_to_dd
 
 
 class ImageData:
@@ -33,17 +34,16 @@ class ImageData:
                 m.update(bloc)
             self.sha256 = m.hexdigest()
 
-    def toJSON(self):
+    def to_json(self):
         if self.exif:
             return {"path": self.path, "datetime": self.datetime.timestamp(), "coord": self.coord}
-        else:
-            return {"path": self.path}
+        return {"path": self.path}
 
     def extract_gps_data(self, image):
         """Extract GPS coordinates from EXIF data and convert them to decimal degrees."""
         try:
-            lat = DMStoDD(*image.gps_latitude, image.gps_latitude_ref)
-            lon = DMStoDD(*image.gps_longitude, image.gps_longitude_ref)
+            lat = dms_to_dd(*image.gps_latitude, image.gps_latitude_ref)
+            lon = dms_to_dd(*image.gps_longitude, image.gps_longitude_ref)
             return lat, lon
         except AttributeError:
             return None

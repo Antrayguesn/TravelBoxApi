@@ -2,6 +2,7 @@
 from travel_box_api.strategy.strategy import Strategy
 
 
+# Return some stat about clusters
 class GetClustersStatStrategy(Strategy):
     def __init__(self):
         super().__init__()
@@ -9,7 +10,7 @@ class GetClustersStatStrategy(Strategy):
 
     def process(self):
         stat = {"continent": {}, "country": {}}
-        for cluster_id, cluster in self.clusters.items():
+        for _, cluster in self.clusters.items():
             try:
                 stat["continent"][cluster["continent"]] = None
                 stat["country"][cluster["country"]] = None

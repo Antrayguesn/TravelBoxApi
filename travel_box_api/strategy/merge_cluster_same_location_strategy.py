@@ -9,6 +9,7 @@ import copy
 from travel_box_api.strategy.strategy import Strategy
 
 
+# Merge nearest clusters
 class MergeClusterSameLocationStrategy(Strategy):
     def __init__(self):
         super().__init__()
@@ -29,5 +30,5 @@ class MergeClusterSameLocationStrategy(Strategy):
                     except KeyError as e:
                         print(f"Impossible de trouver {e} pour le cluster {id_cluster_2}")
 
-    def process(self):
+    def process(self, **kwargs):
         self.__merge_cluster()

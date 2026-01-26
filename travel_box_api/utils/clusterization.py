@@ -1,7 +1,8 @@
-from sklearn.cluster import DBSCAN
-import numpy as np
 import copy
 import uuid
+
+from sklearn.cluster import DBSCAN
+import numpy as np
 
 
 def _create_clusterize(data_images: dict, eps_km: float):
@@ -23,7 +24,7 @@ def _create_clusterize(data_images: dict, eps_km: float):
 
     # labelize photo paths
     clusters = {}
-    for label, path, coord in zip(labels, photo_paths, coords):
+    for label, path, _ in zip(labels, photo_paths, coords):
         if label not in clusters:
             clusters[label] = []
         clusters[label].append(data_images[path])
@@ -67,5 +68,5 @@ def clusterize(data_images: dict, eps_km: float):
 
         for path in paths:
             # Dedup
-            clusters_with_data[str_cluster_id]["photos"][data_images[path].sha256] = data_images[path].toJSON()
+            clusters_with_data[str_cluster_id]["photos"][data_images[path].sha256] = data_images[path].to_json()
     return clusters_with_data

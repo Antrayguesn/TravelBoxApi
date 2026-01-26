@@ -12,16 +12,20 @@ from travel_box_api.strategy.strategy import Strategy
 API_URL_NOMINATIM = "https://nominatim.openstreetmap.org/search.php?city={place}&country={country}&format=jsonv2"
 
 
+# Find coord by place name when centroid doesn't exist
 class SearchClusterCoordStrategy(Strategy):
     def __init__(self):
         super().__init__()
         self.STRATEGY_CODE = "010"
 
     def __search_cluster_coord(self):
-        for c_id, c in self.clusters.items():
+        for _, c in self.clusters.items():
             if "centroid" not in c or c["centroid"] is None:
                 try:
-                    req = requests.get(API_URL_NOMINATIM.format(place=c["place"], country=c.get("country", "")), headers={"User-agent": "classify - v0.1", "Accept-Language": "fr-FR, en;q=0.8"})
+                    req = requests.get(API_URL_NOMINATIM.format(place=c["place"],
+                                                                country=c.get("country", "")),
+                                       headers={"User-agent": "classify - v0.1", "Accept-Language": "fr-FR, en;q=0.8"},
+                                       timeout=60)
                 except KeyError as e:
                     self.log("WARNING_0010", f"Impossible de trouver la clé {e}")
 

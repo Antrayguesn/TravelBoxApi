@@ -30,4 +30,5 @@ COUNTRY_CODE = {
         }
     }
 }
+
 UNUSE_WORDS = ["City", "District", "Coast Road", "Coastal Walk", "Park Road", "Street"]

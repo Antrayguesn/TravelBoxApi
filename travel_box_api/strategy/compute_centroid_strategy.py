@@ -1,7 +1,7 @@
 #!/bin/python3
 
 """
-Date time cluster
+Compute the geographical center of a photos cluster
 """
 
 from travel_box_api.utils.clusterization import compute_centroid

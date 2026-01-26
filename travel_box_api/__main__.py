@@ -1,3 +1,5 @@
+import base64
+
 from flask import Flask, jsonify, send_from_directory, request
 
 import numpy as np
@@ -6,7 +8,6 @@ from travel_box_api.conf.strategy_sequences import SEQUENCES
 from travel_box_api.strategy.strategy_manager import StrategyManager
 from travel_box_api.utils.get_map_service import get_cluster_by_location
 
-import base64
 
 app = Flask(__name__)
 
@@ -19,7 +20,7 @@ for method, routes in SEQUENCES.items():
 
         def endpoint_function(route=route, strategies=strategies):
             def handler(**kwargs):
-                args = np.array([list(s.values()) for s in strategies if type(s) is dict]).flatten().tolist()
+                args = np.array([list(s.values()) for s in strategies if isinstance(s, dict)]).flatten().tolist()
                 if "data" in args:
                     response = strategy_manager.run_sequence(strategies, data=request.json, **kwargs)
                 else:

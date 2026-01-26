@@ -1,26 +1,15 @@
-from travel_box_api.strategy.group_photo_by_location_strategy import GroupPhotosByLocationStrategy
-from travel_box_api.strategy.photo_time_metrics_strategy import PhotoTimeMetricsStrategy
-from travel_box_api.strategy.find_urban_cluster_strategy import FindUrbanClusterStrategy
-from travel_box_api.strategy.compute_centroid_strategy import ComputeCentroidStrategy
-from travel_box_api.strategy.find_place_name_strategy import FindPlaceNameStrategy
-from travel_box_api.strategy.compute_farest_distance_strategy import ComputeFarestDistanceStrategy
-from travel_box_api.strategy.build_location_prop_strategy import BuildLocationPropStrategy
-from travel_box_api.strategy.merge_cluster_same_location_strategy import MergeClusterSameLocationStrategy
-from travel_box_api.strategy.import_from_dir_strategy import ImportFromDirStrategy
-from travel_box_api.strategy.search_cluster_coord_strategy import SearchClusterCoordStrategy
-from travel_box_api.strategy.get_clusters_map_strategy import GetClusterMapStrategy
-from travel_box_api.strategy.update_cluster_strategy import UpdateClusterStrategy
-from travel_box_api.strategy.export_photo_location_gpx import ExportPhotosGPXStrategy
-from travel_box_api.strategy.delete_photo_from_cluster_strategy import DeletePhotoFromClusterStrategy
-from travel_box_api.strategy.add_photo_tags_strategy import AddPhotoTagsStrategy
-from travel_box_api.strategy.get_clusters_stat_strategy import GetClustersStatStrategy
+import pkgutil
+import importlib
+import inspect
 
-from travel_box_api.utils.singleton import Singleton
 from travel_box_api.utils.manage_json_file import read_json_file
 from travel_box_api.utils.manage_json_file import write_json_file
+from travel_box_api.utils.singleton import Singleton
 
 from travel_box_api.error.cluster_file_json_error import CantFindClusterJson
 
+import travel_box_api.strategy
+from travel_box_api.strategy.strategy import Strategy
 
 from travel_box_api.data.log import INFO_LOADING_DATA, INFO_WRITING_DATA, INFO_END_PROCESS, INFO_RUN_STRATEGIES, log
 
@@ -29,23 +18,20 @@ class StrategyManager(metaclass=Singleton):
     def __init__(self):
         self.SERVICE_CODE = "100"
         self.clusters = None
-        self.STRATEGIES = {GroupPhotosByLocationStrategy.__name__: GroupPhotosByLocationStrategy(),
-                           PhotoTimeMetricsStrategy.__name__: PhotoTimeMetricsStrategy(),
-                           FindPlaceNameStrategy.__name__: FindPlaceNameStrategy(),
-                           ComputeCentroidStrategy.__name__: ComputeCentroidStrategy(),
-                           FindUrbanClusterStrategy.__name__: FindUrbanClusterStrategy(),
-                           ComputeFarestDistanceStrategy.__name__: ComputeCentroidStrategy(),
-                           BuildLocationPropStrategy.__name__: BuildLocationPropStrategy(),
-                           MergeClusterSameLocationStrategy.__name__: MergeClusterSameLocationStrategy(),
-                           ImportFromDirStrategy.__name__: ImportFromDirStrategy(),
-                           GetClusterMapStrategy.__name__: GetClusterMapStrategy(),
-                           SearchClusterCoordStrategy.__name__: SearchClusterCoordStrategy(),
-                           UpdateClusterStrategy.__name__: UpdateClusterStrategy(),
-                           ExportPhotosGPXStrategy.__name__: ExportPhotosGPXStrategy(),
-                           DeletePhotoFromClusterStrategy.__name__: DeletePhotoFromClusterStrategy(),
-                           AddPhotoTagsStrategy.__name__: AddPhotoTagsStrategy(),
-                           GetClustersStatStrategy.__name__: GetClustersStatStrategy()
-                           }
+        self.strategies = self.__load_strategies()
+
+    def __load_strategies(self):
+        strategies = {}
+        for _, module_name, _ in pkgutil.iter_modules(travel_box_api.strategy.__path__):
+            if "_strategy" not in module_name:
+                continue
+            module = importlib.import_module(f"travel_box_api.strategy.{module_name}")
+
+            for _, obj in inspect.getmembers(module, inspect.isclass):
+                if issubclass(obj, Strategy) and obj is not Strategy:
+                    strategies[obj.__name__] = obj()
+
+        return strategies
 
     def load_data(self):
         """
@@ -81,9 +67,9 @@ class StrategyManager(metaclass=Singleton):
         strategy_running = None
 
         for strategy in sequence:
-            if type(strategy) is dict:
+            if isinstance(strategy, dict):
                 for strat, args in strategy.items():
-                    strategy_running = self.STRATEGIES[strat]
+                    strategy_running = self.strategies[strat]
                     try:
                         params = {arg: kwargs[arg] for arg in args}
                         return_strategy = strategy_running.run(clusters=self.clusters, **params)
@@ -91,8 +77,8 @@ class StrategyManager(metaclass=Singleton):
                         log("ERROR_0002", f"Can found arg {e}", "000")
                         raise KeyError
 
-            elif type(strategy) is str:
-                strategy_running = self.STRATEGIES[strategy]
+            elif isinstance(strategy, str):
+                strategy_running = self.strategies[strategy]
                 return_strategy = strategy_running.run(self.clusters)
             else:
                 log("ERROR_0001", "Paramater not reconized {strategy}", self.SERVICE_CODE)
