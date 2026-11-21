@@ -1,4 +1,49 @@
-[build-system]
-requires = ["setuptools>=42", "wheel"]
-build-backend = "setuptools.build_meta"
+[project]
+name = "travel-box-api"
+version = "0.0.1"
+description = ""
+readme = "README.md"
+authors = [
+    { name = "Aigyre Consult", email = "nicolas.antraygues@gmail.com" }
+]
+requires-python = ">=3.10"
+dependencies = [
+    "flask",
+    "numpy",
+    "requests",
+    "exif",
+    "scikit-learn",
+]
 
+[project.urls]
+Homepage = "https://github.com/antrayguesn/TravelBoxApi"
+
+
+[build-system]
+requires = ["uv_build>=0.13.9,<0.14"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.17.6",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    "E",  # Erreurs pycodestyle
+    "F",  # Pyflakes : erreurs Python
+    "I",  # Isort : organisation des imports
+    "N",
+    "S",
+    "C4",
+    "T20",
+    "B",      # Bugbear : pièges et erreurs potentielles
+    "UP",     # Modernisation Python
+    "SIM",    # Simplification du code
+    "ARG",
+    "PL"
+]

@@ -14,9 +14,20 @@ ESP_KM = 4
 DEFAULT_PHOTOS_DIR_PATH = "photos"
 UNSORTED_PHOTOS_PATH_VAR = "TB_UNSORTED_PHOTOS_PATH"
 
+UNSORTED_PHOTOS_PATH = os.environ.get(UNSORTED_PHOTOS_PATH_VAR, DEFAULT_PHOTOS_DIR_PATH)
+
 
 # Create cluster of photo grouped by the location (find nearest ones)
 class GroupPhotosByLocationStrategy(Strategy):
+    """
+    Groups photos into geographic clusters based on their GPS coordinates.
+
+    Existing clusters are updated with new photos located within a defined
+    distance of their centroid. Photos that cannot be associated with an
+    existing cluster are grouped into new clusters.
+
+    Photos without GPS coordinates are excluded from geographic matching.
+    """
     def __init__(self):
         super().__init__()
         self.STRATEGY_CODE = "006"
@@ -30,13 +41,16 @@ class GroupPhotosByLocationStrategy(Strategy):
             self.log(ERROR_NO_PHOTO_PATH, f"Can't find {path_dir}", path=path_dir)
             return self.clusters
 
-        for path, image in copy.deepcopy(data_images).items():
+        for path in list(data_images):
+            image = data_images[path]
             # We can compute distance if image have not coord data
+            if image.coord is None:
+                self.log("DEBUG_077", f"Impossible de trouver la coordonnée de l'image {image}")
+                continue
             for id_cluster, cluster in copy.deepcopy(self.clusters).items():
-                if image.coord is None:
-                    pass
-                elif "centroid" in cluster and cluster["centroid"] is not None:
-                    d = distance(image.coord, cluster["centroid"])
+                centroid = cluster.get("centroid")
+                if centroid is not None:
+                    d = distance(image.coord, centroid)
                     if d < ESP_KM:
                         self.log(DEBUG_ADD_PHOTO_IN_CLUSTER,
                                  f"Add photo {image.path} to {id_cluster}",
@@ -59,6 +73,8 @@ class GroupPhotosByLocationStrategy(Strategy):
         return self.clusters
 
     def _create_clusters_from_path(self, path: str) -> dict:
+
+        # TODO: A gérer par exception
         data_images = load_images_from_dir(path)
 
         if not data_images:
@@ -68,8 +84,7 @@ class GroupPhotosByLocationStrategy(Strategy):
         return clusterize(data_images, ESP_KM)
 
     def process(self):
-        path_photos_dir = os.environ.get(UNSORTED_PHOTOS_PATH_VAR, DEFAULT_PHOTOS_DIR_PATH)
         if self.clusters is None:
-            self.clusters = self._create_clusters_from_path(path_photos_dir)
+            self.clusters = self._create_clusters_from_path(UNSORTED_PHOTOS_PATH)
         else:
-            self.clusters = self._update_clusters_with_coord(path_photos_dir)
+            self.clusters = self._update_clusters_with_coord(UNSORTED_PHOTOS_PATH)

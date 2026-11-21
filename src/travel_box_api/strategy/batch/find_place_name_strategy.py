@@ -42,11 +42,10 @@ class FindPlaceNameStrategy(Strategy):
                 ret = requests.get(NOMINATIM_API.format(lat=coord[0], lon=coord[1]),
                                    headers={"User-agent": "classify - v0.1", "Accept-Language": "fr-FR, en;q=0.8"},
                                    timeout=60)
+                res = ret.json()
             # I have realy bad connection ... If the request timeout, we play again the scrpit again
             except Exception:
                 continue
-
-            res = ret.json()
 
             if "error" in res:
                 continue

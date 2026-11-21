@@ -28,6 +28,16 @@ COUNTRY_CODE = {
             "fr": "Amerique",
             "en": "America"
         }
+    },
+    "tw": {
+        "display_name": {
+            "fr": "Taiwan",
+            "en": "Taiwan"
+        },
+        "continent": {
+            "fr": "Asie",
+            "en": "Asia"
+        }
     }
 }
 
