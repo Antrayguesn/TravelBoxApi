@@ -2,10 +2,11 @@ photos
 *.gpx
 home
 sorted
-data.json
+data.json*
 dist
 __pycache__
 *.egg-info
 build
 __pycache__
-
+uv.lock
+.ruff_cache

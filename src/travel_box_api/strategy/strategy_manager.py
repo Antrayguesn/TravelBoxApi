@@ -22,10 +22,12 @@ class StrategyManager(metaclass=Singleton):
 
     def __load_strategies(self):
         strategies = {}
-        for _, module_name, _ in pkgutil.iter_modules(travel_box_api.strategy.__path__):
+        for _, module_name, _ in pkgutil.walk_packages(travel_box_api.strategy.__path__,
+                                                       prefix=f"{travel_box_api.strategy.__name__}."):
+            print(module_name)
             if "_strategy" not in module_name:
                 continue
-            module = importlib.import_module(f"travel_box_api.strategy.{module_name}")
+            module = importlib.import_module(module_name)
 
             for _, obj in inspect.getmembers(module, inspect.isclass):
                 if issubclass(obj, Strategy) and obj is not Strategy:

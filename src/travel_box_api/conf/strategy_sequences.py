@@ -7,11 +7,11 @@ SEQUENCES = {
                 "GroupPhotosByLocationStrategy",
                 "BuildLocationPropStrategy",
                 "ImportFromDirStrategy",
-                "FindUrbanClusterStrategy",
+                "SplitUrbanClustersStrategy",
                 "ComputeCentroidStrategy",
                 "FindPlaceNameStrategy",
-                "SearchClusterCoordStrategy",
-                "PhotoTimeMetricsStrategy",
+                "ClusterGeocodingStrategy",
+                "ClusterTimeRangeStrategy",
                 "ComputeFarestDistanceStrategy",
                 "BuildLocationPropStrategy",
                 "MergeClusterSameLocationStrategy"
@@ -19,8 +19,14 @@ SEQUENCES = {
         },
         "/batch/find_urban_clusters": {
             "STRATEGIES": [
-                "FindUrbanClusterStrategy",
+                "SplitUrbanClustersStrategy",
                 "ComputeCentroidStrategy"
+            ]
+        },
+        "/batch/group_photo_by_location": {
+            "STRATEGIES": [
+                "ComputeCentroidStrategy",
+                "GroupPhotosByLocationStrategy",
             ]
         },
         "/batch/import_from_dir": {
@@ -33,14 +39,14 @@ SEQUENCES = {
                 "FindPlaceStrategy"
             ]
         },
-        "/batch/search_cluster_coord_info": {
+        "/batch/cluster_geocondig": {
             "STRATEGIES": [
-                "SearchClusterCoordStrategy"
+                "ClusterGeocodingStrategy"
             ]
         },
         "/batch/export_as_gpx": {
             "STRATEGIES": [
-                "ExportPhotosGPXStrategy"
+                "ExportClusterGPXStrategy"
             ]
         },
         "/cluster/<uuid:cluster_id>": {

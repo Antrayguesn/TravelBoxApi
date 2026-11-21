@@ -13,7 +13,7 @@ API_URL_NOMINATIM = "https://nominatim.openstreetmap.org/search.php?city={place}
 
 
 # Find coord by place name when centroid doesn't exist
-class SearchClusterCoordStrategy(Strategy):
+class ClusterGeocodingStrategy(Strategy):
     def __init__(self):
         super().__init__()
         self.STRATEGY_CODE = "010"
@@ -29,7 +29,10 @@ class SearchClusterCoordStrategy(Strategy):
                 except KeyError as e:
                     self.log("WARNING_0010", f"Impossible de trouver la clé {e}")
 
-                res = req.json()
+                try:
+                    res = req.json()
+                except:
+                    continue
                 details = None
                 if res:
                     details = res[0]

@@ -9,7 +9,7 @@ from travel_box_api.strategy.strategy import Strategy
 
 
 # Find cities photo cluster
-class FindUrbanClusterStrategy(Strategy):
+class SplitUrbanClustersStrategy(Strategy):
     def __init__(self):
         super().__init__()
         self.STRATEGY_CODE = "005"

@@ -9,7 +9,7 @@ from travel_box_api.data.log import DEBUG_NO_KEY_COORD
 
 
 # Get GPX file with geo informations of photos
-class ExportPhotosGPXStrategy(Strategy):
+class ExportClusterGPXStrategy(Strategy):
     def __init__(self):
         super().__init__()
         self.STRATEGY_CODE = "015"

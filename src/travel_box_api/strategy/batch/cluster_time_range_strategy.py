@@ -11,8 +11,18 @@ from travel_box_api.strategy.strategy import Strategy
 from travel_box_api.data.log import ERROR_ATTRIBUTE_ERROR
 
 
-# Write the period time where been taken photos in clusters
-class PhotoTimeMetricsStrategy(Strategy):
+# Write the time range time where been taken photos in clusters
+class ClusterTimeRangeStrategy(Strategy):
+    """
+    Computes photo time periods for each geographic cluster.
+
+    Photos are sorted chronologically and grouped into periods.
+    A new period starts when the time difference between two
+    consecutive photos exceeds two hours.
+
+    Each cluster is updated with a list of periods containing
+    their respective start and end timestamps.
+    """
     def __init__(self):
         super().__init__()
         self.STRATEGY_CODE = "009"
