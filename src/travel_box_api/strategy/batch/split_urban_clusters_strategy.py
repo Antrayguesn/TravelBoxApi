@@ -3,9 +3,11 @@
 import copy
 import uuid
 
-from travel_box_api.utils.load_images import load_images_from_paths_list
-from travel_box_api.utils.clusterization import clusterize
 from travel_box_api.strategy.strategy import Strategy
+from travel_box_api.utils.clusterization import clusterize
+from travel_box_api.utils.load_images import load_images_from_paths_list
+
+MAX_CLUSTER_SIZE = 150
 
 
 # Find cities photo cluster
@@ -19,7 +21,7 @@ class SplitUrbanClustersStrategy(Strategy):
         for cluster, cluster_data in self.clusters.items():
             cluster_len = len(cluster_data["photos"])
 
-            if cluster_len > 150:
+            if cluster_len > MAX_CLUSTER_SIZE:
                 paths_list = (v["path"] for v in cluster_data["photos"].values())
                 data_images = load_images_from_paths_list(list(paths_list))
                 del clusters_copy[cluster]

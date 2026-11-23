@@ -1,6 +1,7 @@
 import os
+
 from travel_box_api.data.image_data import ImageData
-from travel_box_api.data.log import log, INFO_LOADING_PHOTO, WARNING_UNEXECPT_ERROR, DEBUG_PHOTO_CURRENTLY_PROCESS
+from travel_box_api.data.log import DEBUG_PHOTO_CURRENTLY_PROCESS, INFO_LOADING_PHOTO, WARNING_UNEXECPT_ERROR, log
 
 
 def load_images_from_dir(path, exclude_list: list = None):
@@ -11,7 +12,7 @@ def load_images_from_dir(path, exclude_list: list = None):
         for file_photo in files:
             file_path = os.path.join(root, file_photo)
             log(DEBUG_PHOTO_CURRENTLY_PROCESS, f"Trying to load {file_path}", photo_path=file_path)
-            if not file_photo.lower().endswith(('.jpg', '.jpeg', '.png')):
+            if not file_photo.lower().endswith((".jpg", ".jpeg", ".png")):
                 continue
             try:
                 image_data = ImageData(file_path)
@@ -33,7 +34,8 @@ def load_images_from_paths_list(paths_list: list):
     for path in paths_list:
         try:
             image_data = ImageData(path)
-        except Exception:
+        except Exception as e:
+            log("EXCEPTION_001", e)
             continue
 
         data_images[path] = image_data

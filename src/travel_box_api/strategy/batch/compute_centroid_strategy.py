@@ -4,8 +4,8 @@
 Compute the geographical center of a photos cluster
 """
 
-from travel_box_api.utils.clusterization import compute_centroid
 from travel_box_api.strategy.strategy import Strategy
+from travel_box_api.utils.clusterization import compute_centroid
 
 
 class ComputeCentroidStrategy(Strategy):

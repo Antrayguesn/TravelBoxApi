@@ -11,10 +11,7 @@ class UpdateClusterStrategy(Strategy):
     def process(self, cluster_id, data):
         try:
             self.clusters[str(cluster_id)].update(data)
-            if "continent" in data \
-               or "region" in data \
-               or "country" in data \
-               or "place" in data:
+            if "continent" in data or "region" in data or "country" in data or "place" in data:
                 self.clusters[str(cluster_id)]["location"] = None
         except KeyError:
             self.log("DEBUG_9999", "Impossible de trouver le cluster")

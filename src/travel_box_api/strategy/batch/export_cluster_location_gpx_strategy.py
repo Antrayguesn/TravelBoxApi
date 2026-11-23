@@ -1,11 +1,9 @@
-from datetime import datetime
 import base64
-
 import xml.etree.ElementTree as ET
-
-from travel_box_api.strategy.strategy import Strategy
+from datetime import datetime
 
 from travel_box_api.data.log import DEBUG_NO_KEY_COORD
+from travel_box_api.strategy.strategy import Strategy
 
 
 # Get GPX file with geo informations of photos
@@ -31,7 +29,7 @@ class ExportClusterGPXStrategy(Strategy):
             try:
                 trk_cluster = ET.SubElement(trk, "wpt")
                 trk_cluster.set("lon", str(cluster["centroid"][1]))
-                trk_cluster.set('lat', str(cluster["centroid"][0]))
+                trk_cluster.set("lat", str(cluster["centroid"][0]))
             except KeyError as e:
                 self.log(DEBUG_NO_KEY_COORD, f"Can't find key {e} for cluster {cluster_id}", cluster_id=cluster_id)
                 continue

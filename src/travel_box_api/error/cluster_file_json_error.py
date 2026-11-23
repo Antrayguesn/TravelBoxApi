@@ -1,6 +1,6 @@
-class CantReadClusterJson(Exception):
+class CantReadClusterJsonError(Exception):
     pass
 
 
-class CantFindClusterJson(Exception):
+class CantFindClusterJsonError(Exception):
     pass

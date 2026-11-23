@@ -16,7 +16,7 @@ def merge_clusters(id_cluster_1, id_cluster_2):
 
 def move_photo_from_cluster_to_cluster(image, id_cluster_1, id_cluster_2):
     """
-      Move the photo from cluster_1 to cluster_2
+    Move the photo from cluster_1 to cluster_2
     """
     clusters = read_json_file()
     clusters[str(id_cluster_2)]["photos"][image] = copy.deepcopy(clusters[str(id_cluster_1)]["photos"][image])

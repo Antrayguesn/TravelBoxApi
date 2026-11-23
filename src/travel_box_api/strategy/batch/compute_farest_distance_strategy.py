@@ -3,10 +3,9 @@
 
 import copy
 
+from travel_box_api.data.log import DEBUG_NO_CENTROID, DEBUG_UNABLE_TO_FIND_CENTROID
 from travel_box_api.strategy.strategy import Strategy
 from travel_box_api.utils.geo_function import distance
-
-from travel_box_api.data.log import DEBUG_UNABLE_TO_FIND_CENTROID, DEBUG_NO_CENTROID
 
 
 # Compute where is the photo take the most fareway comparated to the centroid
@@ -20,11 +19,15 @@ class ComputeFarestDistanceStrategy(Strategy):
             try:
                 centroid = cluster["centroid"]
             except KeyError:
-                self.log(DEBUG_UNABLE_TO_FIND_CENTROID, f"Impossible de trouver le centroid dans le cluster {cluster_id}")
+                self.log(
+                    DEBUG_UNABLE_TO_FIND_CENTROID, f"Impossible de trouver le centroid dans le cluster {cluster_id}"
+                )
             max_distance = 0
             for photo in cluster["photos"].values():
                 if "coord" not in photo or photo["coord"] is None:
-                    self.log(DEBUG_NO_CENTROID, f"No GPS coordinate for the photo {photo["path"]}", photo_path=photo["path"])
+                    self.log(
+                        DEBUG_NO_CENTROID, f"No GPS coordinate for the photo {photo['path']}", photo_path=photo["path"]
+                    )
                     continue
                 photo_coord = photo["coord"]
 

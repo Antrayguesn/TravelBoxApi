@@ -1,7 +1,7 @@
-from travel_box_api.data.log import INFO_RUN_STRATEGY, INFO_PROCESSING_DATA, INFO_END_PROCESS, log
+from travel_box_api.data.log import INFO_END_PROCESS, INFO_PROCESSING_DATA, INFO_RUN_STRATEGY, log
 
 
-class Strategy():
+class Strategy:
     """
     Classe mère représentant une stratégie de traitement par lots.
     """

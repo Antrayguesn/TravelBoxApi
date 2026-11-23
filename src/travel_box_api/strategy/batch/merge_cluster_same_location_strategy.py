@@ -28,7 +28,11 @@ class MergeClusterSameLocationStrategy(Strategy):
                             del self.clusters[str(id_cluster_2)]
                             cluster_already_sorted.append(id_cluster_2)
                     except KeyError as e:
-                        print(f"Impossible de trouver {e} pour le cluster {id_cluster_2}")
+                        self.log(
+                            "INFO_XXX",
+                            f"Impossible de trouver {e} pour le cluster {id_cluster_2}",
+                            cluster=id_cluster_2,
+                        )
 
     def process(self, **kwargs):
         self.__merge_cluster()

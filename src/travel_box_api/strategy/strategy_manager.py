@@ -1,17 +1,13 @@
-import pkgutil
 import importlib
 import inspect
-
-from travel_box_api.utils.manage_json_file import read_json_file
-from travel_box_api.utils.manage_json_file import write_json_file
-from travel_box_api.utils.singleton import Singleton
-
-from travel_box_api.error.cluster_file_json_error import CantFindClusterJson
+import pkgutil
 
 import travel_box_api.strategy
+from travel_box_api.data.log import INFO_END_PROCESS, INFO_LOADING_DATA, INFO_RUN_STRATEGIES, INFO_WRITING_DATA, log
+from travel_box_api.error.cluster_file_json_error import CantFindClusterJsonError
 from travel_box_api.strategy.strategy import Strategy
-
-from travel_box_api.data.log import INFO_LOADING_DATA, INFO_WRITING_DATA, INFO_END_PROCESS, INFO_RUN_STRATEGIES, log
+from travel_box_api.utils.manage_json_file import read_json_file, write_json_file
+from travel_box_api.utils.singleton import Singleton
 
 
 class StrategyManager(metaclass=Singleton):
@@ -22,9 +18,9 @@ class StrategyManager(metaclass=Singleton):
 
     def __load_strategies(self):
         strategies = {}
-        for _, module_name, _ in pkgutil.walk_packages(travel_box_api.strategy.__path__,
-                                                       prefix=f"{travel_box_api.strategy.__name__}."):
-            print(module_name)
+        for _, module_name, _ in pkgutil.walk_packages(
+            travel_box_api.strategy.__path__, prefix=f"{travel_box_api.strategy.__name__}."
+        ):
             if "_strategy" not in module_name:
                 continue
             module = importlib.import_module(module_name)
@@ -41,7 +37,7 @@ class StrategyManager(metaclass=Singleton):
         """
         try:
             self.clusters = read_json_file()
-        except CantFindClusterJson:
+        except CantFindClusterJsonError:
             self.clusters = None
 
     def process(self):
@@ -77,7 +73,7 @@ class StrategyManager(metaclass=Singleton):
                         return_strategy = strategy_running.run(clusters=self.clusters, **params)
                     except KeyError as e:
                         log("ERROR_0002", f"Can found arg {e}", "000")
-                        raise KeyError
+                        raise KeyError from e
 
             elif isinstance(strategy, str):
                 strategy_running = self.strategies[strategy]

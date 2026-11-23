@@ -6,9 +6,8 @@ Date time cluster
 
 import copy
 
-from travel_box_api.strategy.strategy import Strategy
-
 from travel_box_api.data.log import ERROR_ATTRIBUTE_ERROR
+from travel_box_api.strategy.strategy import Strategy
 
 
 # Write the time range time where been taken photos in clusters
@@ -23,6 +22,7 @@ class ClusterTimeRangeStrategy(Strategy):
     Each cluster is updated with a list of periods containing
     their respective start and end timestamps.
     """
+
     def __init__(self):
         super().__init__()
         self.STRATEGY_CODE = "009"
@@ -32,7 +32,7 @@ class ClusterTimeRangeStrategy(Strategy):
             try:
                 sorted_date_image = sorted(cluster["photos"].items(), key=lambda item: item[1]["datetime"])
             except KeyError as e:
-                print(f"Impossible de trouver {e} dans {cluster_id}")
+                self.log("WARNING_996", f"Can't find {e} in cluster {cluster_id}", key=str(e), cluster_id=cluster_id)
                 continue
             except AttributeError as e:
                 self.log(ERROR_ATTRIBUTE_ERROR, f"Attribute error {e} for cluster {cluster_id}", cluster_id=cluster_id)

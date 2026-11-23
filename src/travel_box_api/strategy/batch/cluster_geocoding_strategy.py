@@ -5,6 +5,7 @@ Date time cluster
 """
 
 import time
+
 import requests
 
 from travel_box_api.strategy.strategy import Strategy
@@ -19,19 +20,24 @@ class ClusterGeocodingStrategy(Strategy):
         self.STRATEGY_CODE = "010"
 
     def __search_cluster_coord(self):
-        for _, c in self.clusters.items():
+        for cluster_id, c in self.clusters.items():
             if "centroid" not in c or c["centroid"] is None:
                 try:
-                    req = requests.get(API_URL_NOMINATIM.format(place=c["place"],
-                                                                country=c.get("country", "")),
-                                       headers={"User-agent": "classify - v0.1", "Accept-Language": "fr-FR, en;q=0.8"},
-                                       timeout=60)
+                    req = requests.get(
+                        API_URL_NOMINATIM.format(place=c["place"], country=c.get("country", "")),
+                        headers={"User-agent": "classify - v0.1", "Accept-Language": "fr-FR, en;q=0.8"},
+                        timeout=60,
+                    )
                 except KeyError as e:
                     self.log("WARNING_0010", f"Impossible de trouver la clé {e}")
 
                 try:
                     res = req.json()
-                except:
+                except Exception as e:
+                    self.log(
+                        "WARNIG_995", f"Error occuring while fecthing cluster data {cluster_id}", cluster_id=cluster_id
+                    )
+                    self.log("EXCEPTION_003", e)
                     continue
                 details = None
                 if res:
@@ -45,7 +51,7 @@ class ClusterGeocodingStrategy(Strategy):
                     continue
 
                 try:
-                    c["centroid"] = [float(details['lat']), float(details["lon"])]
+                    c["centroid"] = [float(details["lat"]), float(details["lon"])]
                 except KeyError:
                     continue
 
