@@ -17,4 +17,8 @@ class GetClustersStatStrategy(Strategy):
             except KeyError:
                 continue
 
-        return {"nb_continent": len(stat["continent"].keys()), "nb_country": len(stat["country"].keys()), "country": list(stat["country"].keys())}
+        return {
+            "nb_continent": len(stat["continent"].keys()),
+            "nb_country": len(stat["country"].keys()),
+            "country": list(stat["country"].keys()),
+        }

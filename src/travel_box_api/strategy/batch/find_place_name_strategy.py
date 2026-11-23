@@ -1,15 +1,14 @@
 #!/bin/python3
 
-import time
 import copy
 import re
+import time
 
 import requests
 
-from travel_box_api.utils.country_code import COUNTRY_CODE
-from travel_box_api.strategy.strategy import Strategy
-
 from travel_box_api.data.log import DEBUG_FIND_CLUSTER_PLACE
+from travel_box_api.strategy.strategy import Strategy
+from travel_box_api.utils.country_code import COUNTRY_CODE
 
 # DUCKDUCK_URL = "https://duckduckgo.com/?q={search}&kl={locale}&format=json&kp=-2&kc=1&kaf=1"
 DUCKDUCK_URL = "https://duckduckgo.com/?q={search}&format=json"
@@ -30,21 +29,20 @@ class FindPlaceNameStrategy(Strategy):
             except KeyError:
                 continue
 
-            if "continent" in metadata \
-               or "region" in metadata \
-               or "country" in metadata \
-               or "place" in metadata:
+            if "continent" in metadata or "region" in metadata or "country" in metadata or "place" in metadata:
                 continue
 
             self.log(DEBUG_FIND_CLUSTER_PLACE, f"Finding the place for the cluster {cluster}", cluster_id=cluster)
 
             try:
-                ret = requests.get(NOMINATIM_API.format(lat=coord[0], lon=coord[1]),
-                                   headers={"User-agent": "classify - v0.1", "Accept-Language": "fr-FR, en;q=0.8"},
-                                   timeout=60)
+                ret = requests.get(
+                    NOMINATIM_API.format(lat=coord[0], lon=coord[1]),
+                    headers={"User-agent": "classify - v0.1", "Accept-Language": "fr-FR, en;q=0.8"},
+                    timeout=60,
+                )
                 res = ret.json()
-            # I have realy bad connection ... If the request timeout, we play again the scrpit again
-            except Exception:
+            except Exception as e:
+                self.log("EXCEPTION_002", e)
                 continue
 
             if "error" in res:
@@ -57,9 +55,7 @@ class FindPlaceNameStrategy(Strategy):
                 region = res["address"]["village"]
             elif "hamlet" in res["address"]:
                 region = res["address"]["hamlet"]
-            elif "town" in res["address"]:
-                region = res["address"]["town"]
-            elif "town" in res["address"]:
+            elif "town" in res["address"] or "town" in res["address"]:
                 region = res["address"]["town"]
             elif "county" in res["address"]:
                 region = res["address"]["county"]
@@ -83,7 +79,7 @@ class FindPlaceNameStrategy(Strategy):
             try:
                 new_metadatas[cluster]["continent"] = COUNTRY_CODE[res["address"]["country_code"]]["continent"]["fr"]
             except KeyError as e:
-                print(f"Impossible de trouvé la clé {e}")
+                self.log("WARNING_997", f"Can't find key {e}", key=e)
             new_metadatas[cluster]["country"] = country.strip()
             new_metadatas[cluster]["region"] = region.strip()
             new_metadatas[cluster]["place"] = place.strip()

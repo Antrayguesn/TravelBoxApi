@@ -1,13 +1,16 @@
 import copy
 import os
 
-from travel_box_api.utils.clusterization import clusterize
-from travel_box_api.utils.load_images import load_images_from_dir
-from travel_box_api.utils.geo_function import distance
+from travel_box_api.data.log import (
+    DEBUG_ADD_PHOTO_IN_CLUSTER,
+    DEBUG_PHOTO_ALREADY_DELETED,
+    ERROR_NO_PHOTO_PATH,
+    WARNING_NO_CENTROID,
+)
 from travel_box_api.strategy.strategy import Strategy
-
-from travel_box_api.data.log import DEBUG_PHOTO_ALREADY_DELETED, ERROR_NO_PHOTO_PATH, DEBUG_ADD_PHOTO_IN_CLUSTER, WARNING_NO_CENTROID
-
+from travel_box_api.utils.clusterization import clusterize
+from travel_box_api.utils.geo_function import distance
+from travel_box_api.utils.load_images import load_images_from_dir
 
 ESP_KM = 4
 
@@ -28,6 +31,7 @@ class GroupPhotosByLocationStrategy(Strategy):
 
     Photos without GPS coordinates are excluded from geographic matching.
     """
+
     def __init__(self):
         super().__init__()
         self.STRATEGY_CODE = "006"
@@ -52,20 +56,27 @@ class GroupPhotosByLocationStrategy(Strategy):
                 if centroid is not None:
                     d = distance(image.coord, centroid)
                     if d < ESP_KM:
-                        self.log(DEBUG_ADD_PHOTO_IN_CLUSTER,
-                                 f"Add photo {image.path} to {id_cluster}",
-                                 cluster_id=id_cluster,
-                                 photo_path=image.path)
+                        self.log(
+                            DEBUG_ADD_PHOTO_IN_CLUSTER,
+                            f"Add photo {image.path} to {id_cluster}",
+                            cluster_id=id_cluster,
+                            photo_path=image.path,
+                        )
                         self.clusters[id_cluster]["photos"][image.sha256] = image.to_json()
                         try:
                             del data_images[path]
                         except KeyError:
-                            self.log(DEBUG_PHOTO_ALREADY_DELETED, f"The photo {path} as already been deleted from the photo list")
+                            self.log(
+                                DEBUG_PHOTO_ALREADY_DELETED,
+                                f"The photo {path} as already been deleted from the photo list",
+                            )
                 else:
-                    self.log(WARNING_NO_CENTROID,
-                             f"Can't find the centroid for cluster {id_cluster}",
-                             id_cluster=id_cluster,
-                             location=cluster.get("location", ""))
+                    self.log(
+                        WARNING_NO_CENTROID,
+                        f"Can't find the centroid for cluster {id_cluster}",
+                        id_cluster=id_cluster,
+                        location=cluster.get("location", ""),
+                    )
 
         new_clusters = clusterize(data_images, ESP_KM)
         self.clusters.update(new_clusters)
@@ -78,7 +89,7 @@ class GroupPhotosByLocationStrategy(Strategy):
         data_images = load_images_from_dir(path)
 
         if not data_images:
-            print(f"Can't found : {path}")
+            self.log("ERROR_998", f"Can't found image in {path}", path=path)
             return {}
 
         return clusterize(data_images, ESP_KM)

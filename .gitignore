@@ -2,7 +2,7 @@ photos
 *.gpx
 home
 sorted
-data.json*
+data*.json*
 dist
 __pycache__
 *.egg-info

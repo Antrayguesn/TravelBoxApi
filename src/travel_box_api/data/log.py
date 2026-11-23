@@ -1,7 +1,8 @@
 import logging
+import time
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(encoding='utf-8', level=logging.INFO, format="")
+logging.basicConfig(encoding="utf-8", level=logging.INFO, format="")
 
 INFO_RUN_STRATEGY = "INFO_0001"
 INFO_LOADING_DATA = "INFO_0002"
@@ -31,7 +32,7 @@ WARNING_NO_CENTROID = "WARNING_0002"
 
 def log(code, msg, service_code=None, **kwargs):
     severity = code.split("_")[0]
-    json_log = {"CODE": code, "MSG": msg, "SEVERITY": severity, "SERVICE_CODE": service_code, **kwargs}
+    json_log = {"timestamp": int(time.time()), "CODE": code, "MSG": msg, "SEVERITY": severity, "SERVICE_CODE": service_code, **kwargs}
     if severity == "INFO":
         logger.info(json_log)
     elif severity == "DEBUG":
@@ -40,3 +41,5 @@ def log(code, msg, service_code=None, **kwargs):
         logger.error(json_log)
     elif severity == "WARNING":
         logger.warning(json_log)
+    elif severity == "EXECPTION":
+        logger.exception(msg)

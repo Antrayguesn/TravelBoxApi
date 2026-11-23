@@ -5,70 +5,34 @@ SEQUENCES = {
         "/group_photo_by_location": {
             "STRATEGIES": [
                 "GroupPhotosByLocationStrategy",
-                "BuildLocationPropStrategy",
-                "ImportFromDirStrategy",
+                "BuildClusterLocationStrategy",
+                "ImportClustersFromStructuredDirsStrategy",
                 "SplitUrbanClustersStrategy",
                 "ComputeCentroidStrategy",
                 "FindPlaceNameStrategy",
                 "ClusterGeocodingStrategy",
                 "ClusterTimeRangeStrategy",
                 "ComputeFarestDistanceStrategy",
-                "BuildLocationPropStrategy",
-                "MergeClusterSameLocationStrategy"
+                "BuildClusterLocationStrategy",
+                "MergeClusterSameLocationStrategy",
             ]
         },
-        "/batch/find_urban_clusters": {
-            "STRATEGIES": [
-                "SplitUrbanClustersStrategy",
-                "ComputeCentroidStrategy"
-            ]
-        },
+        "/batch/find_urban_clusters": {"STRATEGIES": ["SplitUrbanClustersStrategy", "ComputeCentroidStrategy"]},
         "/batch/group_photo_by_location": {
-            "STRATEGIES": [
-                "ComputeCentroidStrategy",
-                "GroupPhotosByLocationStrategy",
-            ]
+            "STRATEGIES": ["ComputeCentroidStrategy", "GroupPhotosByLocationStrategy", "BuildClusterLocationStrategy"]
         },
         "/batch/import_from_dir": {
             "STRATEGIES": [
-                "ImportFromDirStrategy",
+                "ImportClustersFromStructuredDirsStrategy",
             ]
         },
-        "/batch/find_place_name": {
-            "STRATEGIES": [
-                "FindPlaceStrategy"
-            ]
-        },
-        "/batch/cluster_geocondig": {
-            "STRATEGIES": [
-                "ClusterGeocodingStrategy"
-            ]
-        },
-        "/batch/export_as_gpx": {
-            "STRATEGIES": [
-                "ExportClusterGPXStrategy"
-            ]
-        },
-        "/cluster/<uuid:cluster_id>": {
-            "STRATEGIES": [
-                {"GetClusterStrategy": ["cluster_id"]}
-            ]
-        },
-        "/clusters/": {
-            "STRATEGIES": [
-                "GetClustersStrategy"
-            ]
-        },
-        "/map_cluster": {
-            "STRATEGIES": [
-                "GetClusterMapStrategy"
-            ]
-        },
-        "/stat_clusters": {
-            "STRATEGIES": [
-                "GetClustersStatStrategy"
-            ]
-        },
+        "/batch/find_place_name": {"STRATEGIES": ["FindPlaceStrategy"]},
+        "/batch/cluster_geocondig": {"STRATEGIES": ["ClusterGeocodingStrategy"]},
+        "/batch/export_as_gpx": {"STRATEGIES": ["ExportClusterGPXStrategy"]},
+        "/cluster/<uuid:cluster_id>": {"STRATEGIES": [{"GetClusterStrategy": ["cluster_id"]}]},
+        "/clusters/": {"STRATEGIES": ["GetClustersStrategy"]},
+        "/map_cluster": {"STRATEGIES": ["GetClusterMapStrategy"]},
+        "/stat_clusters": {"STRATEGIES": ["GetClustersStatStrategy"]},
     },
     "POST": {
         "/photo/add_tags/<string:photo_id>": {
@@ -81,7 +45,7 @@ SEQUENCES = {
         "/cluster/<string:cluster_id>": {
             "STRATEGIES": [
                 {"UpdateClusterStrategy": ["cluster_id", "data"]},
-                "BuildLocationPropStrategy",
+                "BuildClusterLocationStrategy",
                 "MergeClusterSameLocationStrategy",
                 "ComputeCentroidStrategy",
                 "ComputeFarestDistanceStrategy",
@@ -96,5 +60,5 @@ SEQUENCES = {
                 "ComputeFarestDistanceStrategy",
             ]
         }
-    }
+    },
 }

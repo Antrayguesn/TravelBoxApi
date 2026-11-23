@@ -1,10 +1,10 @@
-from math import cos, asin, sqrt, pi
+from math import asin, cos, pi, sqrt
 
 
 def dms_to_dd(degrees, minutes, seconds, hemisphere):
-    """ Convert DMS (Degrees, Minutes, Seconds) to DD (Decimal Degrees)."""
+    """Convert DMS (Degrees, Minutes, Seconds) to DD (Decimal Degrees)."""
     dd = degrees + (minutes / 60) + (seconds / 3600)
-    return -dd if hemisphere in ['S', 'W'] else dd
+    return -dd if hemisphere in ["S", "W"] else dd
 
 
 def distance(coord1, coord2):

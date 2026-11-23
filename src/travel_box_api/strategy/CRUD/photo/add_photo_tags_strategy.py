@@ -1,4 +1,3 @@
-
 from travel_box_api.strategy.strategy import Strategy
 
 

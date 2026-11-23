@@ -18,15 +18,16 @@ Display everything in a simple and user-friendly interface: either as an interac
 ## Build
 ### Python
 
-The project is built using `setuptools` (setup.py and pyproject.toml).
+The project is built using `uv` (See `pyproject.toml`).
 
 To build the Python package, run:
 
 ```bash
-python3 -m build sdist
+uv sync
+uv build
 ```
 
-The package will be generated in the dist directory.
+The package will be generated in the `dist` directory.
 
 ### Docker
 
@@ -100,13 +101,7 @@ This example demonstrates how to execute the `FindUrbanClusterStrategy` followed
 This example demonstrates how to execute the `GetClusterStrategy`, which requires a `cluster_id` argument, accessible through the `/cluster/<cluster_id>` route:
 
 ```python
-{
-  "/cluster/<uuid:cluster_id>": {
-      "STRATEGIES": [
-          {"GetClusterStrategy": ["cluster_id"]}
-      ]
-  }
-}
+{"/cluster/<uuid:cluster_id>": {"STRATEGIES": [{"GetClusterStrategy": ["cluster_id"]}]}}
 ```
 ``
 

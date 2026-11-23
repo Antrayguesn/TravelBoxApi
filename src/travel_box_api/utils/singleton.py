@@ -4,6 +4,7 @@ class Singleton(type):
 
     Ensures a class has only one instance and provides a global point of access to it.
     """
+
     _instances = {}
 
     def __call__(cls, *args, **kwargs):
